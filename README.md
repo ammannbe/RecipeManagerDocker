@@ -15,6 +15,10 @@ git clone https://github.com/ammannbe/RecipeManagerDocker.git
 - Copy the .env.example files and edit them to your needs:
 
 ```bash
+# Global:
+cp .env.example .env
+nano .env
+
 # Api:
 cp ./api/.env.example ./api/.env
 nano ./api/.env

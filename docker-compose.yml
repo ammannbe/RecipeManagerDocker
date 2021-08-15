@@ -14,7 +14,7 @@ services:
   web:
     env_file:
       - ./web/.env
-    image: suhype/recipe-manager-web:${APP_VERSION}
+    image: suhype/recipe-manager-web:${APP_VERSION_WEB}
     restart: always
     volumes:
       - ./web/.env:/usr/src/recipe-manager/.env
@@ -22,14 +22,16 @@ services:
       - recipe-manager
     ports:
       - 3000:3000
+    depends_on:
+      - api
 
-  app:
+  api:
     env_file:
       - ./api/.env
-    image: suhype/recipe-manager-api:${APP_VERSION}
+    image: suhype/recipe-manager-api:${APP_VERSION_API}
     restart: unless-stopped
     environment:
-      - CONTAINER_ROLE=app
+      - CONTAINER_ROLE=api
     volumes:
       - html:/var/www/html
       - ./api/.env:/var/www/html/.env
@@ -45,8 +47,8 @@ services:
 
   queue:
     env_file:
-      - - ./api/.env
-    image: suhype/recipe-manager-api:${APP_VERSION}
+      - ./api/.env
+    image: suhype/recipe-manager-api:${APP_VERSION_API}
     restart: unless-stopped
     environment:
       - CONTAINER_ROLE=queue
@@ -61,8 +63,8 @@ services:
 
   scheduler:
     env_file:
-      - - ./api/.env
-    image: suhype/recipe-manager-api:${APP_VERSION}
+      - ./api/.env
+    image: suhype/recipe-manager-api:${APP_VERSION_API}
     restart: unless-stopped
     environment:
       - CONTAINER_ROLE=scheduler
