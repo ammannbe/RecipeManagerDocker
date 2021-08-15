@@ -62,6 +62,7 @@ $user = User::create([
 ]);
 $user->admin = true; $user->update();
 $user->author()->create(['name' => $name]);
+$user->markEmailAsVerified();
 ```
 
 # docker-compose: Files you can overwrite
