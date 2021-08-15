@@ -1,0 +1,20 @@
+# ---> VisualStudioCode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# User data
+/api/data
+/web/data
+/shared
+.env
+.env.backup
+.phpunit.result.cache
+_ide_helper.php
+docker-compose.override.yml
+Homestead.json
+Homestead.yaml
+npm-debug.log
+yarn-error.log
