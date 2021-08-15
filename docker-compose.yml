@@ -39,7 +39,7 @@ services:
     networks:
       - recipe-manager
     ports:
-      - ${HTTP_PORT_WEB}:8080
+      - ${HTTP_PORT_API}:8080
     depends_on:
       - db
       - redis
