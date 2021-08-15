@@ -1,0 +1,112 @@
+version: "3"
+
+networks:
+  recipe-manager:
+    ipam:
+      driver: default
+      config:
+        - subnet: "172.16.238.0/24"
+
+volumes:
+  html:
+
+services:
+  web:
+    env_file:
+      - ./web/.env
+    image: suhype/recipe-manager-web:${APP_VERSION}
+    restart: always
+    volumes:
+      - ./web/.env:/usr/src/recipe-manager/.env
+    networks:
+      - recipe-manager
+    ports:
+      - 3000:3000
+
+  app:
+    env_file:
+      - ./api/.env
+    image: suhype/recipe-manager-api:${APP_VERSION}
+    restart: unless-stopped
+    environment:
+      - CONTAINER_ROLE=app
+    volumes:
+      - html:/var/www/html
+      - ./api/.env:/var/www/html/.env
+      - ./api/data/app:/var/www/html/storage/app
+    networks:
+      - recipe-manager
+    ports:
+      - 80:8080
+    depends_on:
+      - db
+      - redis
+      - meilisearch
+
+  queue:
+    env_file:
+      - - ./api/.env
+    image: suhype/recipe-manager:${APP_VERSION}
+    restart: unless-stopped
+    environment:
+      - CONTAINER_ROLE=queue
+    volumes:
+      - html:/var/www/html
+      - ./api/.env:/var/www/html/.env
+      - ./api/data/app:/var/www/html/storage/app
+    networks:
+      - recipe-manager
+    depends_on:
+      - app
+
+  scheduler:
+    env_file:
+      - - ./api/.env
+    image: suhype/recipe-manager:${APP_VERSION}
+    restart: unless-stopped
+    environment:
+      - CONTAINER_ROLE=scheduler
+    volumes:
+      - html:/var/www/html
+      - ./api/.env:/var/www/html/.env
+      - ./api/data/app:/var/www/html/storage/app
+    networks:
+      - recipe-manager
+    depends_on:
+      - app
+
+  db:
+    env_file:
+      - ./api/.env
+    image: mariadb:${MARIADB_VERSION}
+    restart: always
+    environment:
+      - MYSQL_DATABASE=${DB_DATABASE}
+      - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
+      - MYSQL_PASSWORD=${DB_PASSWORD}
+      - MYSQL_USER=${DB_USERNAME}
+    networks:
+      - recipe-manager
+    volumes:
+      - ./data/mysql:/var/lib/mysql
+
+  redis:
+    env_file:
+      - ./api/.env
+    image: redis:${REDIS_VERSION}
+    restart: always
+    networks:
+      - recipe-manager
+    command: redis-server --requirepass ${REDIS_PASSWORD}
+
+  meilisearch:
+    env_file:
+      - ./api/.env
+    image: getmeili/meilisearch:${MEILISEARCH_VERSION}
+    restart: always
+    environment:
+      - MEILI_MASTER_KEY=${MEILISEARCH_KEY}
+    volumes:
+      - ./data/meilisearch:/data.ms
+    networks:
+      - recipe-manager
