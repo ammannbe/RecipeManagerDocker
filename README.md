@@ -39,6 +39,31 @@ nano ./web/.env
 - Enable the service: `systemctl enable recipe-manager.service`
 - Start the service: `systemctl start recipe-manager.service`
 
+## Create the first user
+
+If you have the registration disabled, create the first user via CLI:
+
+- Start the PHP tinker CLI
+
+```bash
+docker-compose exec api php artisan tinker
+```
+
+- Create the user and give admin rights
+
+```php
+$name = '<YOUR FULL NAME>';
+$email = '<YOUR EMAIL ADDRESS>';
+$password = '<YOUR PASSWORD>';
+
+$user = User::create([
+  'email' => $email,
+  'password' => \Hash::make($password),
+]);
+$user->admin = true; $user->update();
+$user->author()->create(['name' => $name]);
+```
+
 # docker-compose: Files you can overwrite
 
 With the _volumes:_ option you can overwrite every file/folder from the containers.
