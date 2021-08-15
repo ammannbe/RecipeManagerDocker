@@ -46,7 +46,7 @@ services:
   queue:
     env_file:
       - - ./api/.env
-    image: suhype/recipe-manager:${APP_VERSION}
+    image: suhype/recipe-manager-api:${APP_VERSION}
     restart: unless-stopped
     environment:
       - CONTAINER_ROLE=queue
@@ -62,7 +62,7 @@ services:
   scheduler:
     env_file:
       - - ./api/.env
-    image: suhype/recipe-manager:${APP_VERSION}
+    image: suhype/recipe-manager-api:${APP_VERSION}
     restart: unless-stopped
     environment:
       - CONTAINER_ROLE=scheduler
