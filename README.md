@@ -21,6 +21,7 @@ nano .env
 
 # Api:
 cp ./api/.env.example ./api/.env
+chown 1000:1000 ./api/.env
 nano ./api/.env
 
 # Web:

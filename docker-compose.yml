@@ -21,7 +21,7 @@ services:
     networks:
       - recipe-manager
     ports:
-      - 3000:3000
+      - ${HTTP_PORT_WEB}:3000
     depends_on:
       - api
 
@@ -39,7 +39,7 @@ services:
     networks:
       - recipe-manager
     ports:
-      - 80:8080
+      - ${HTTP_PORT_WEB}:8080
     depends_on:
       - db
       - redis
@@ -59,7 +59,7 @@ services:
     networks:
       - recipe-manager
     depends_on:
-      - app
+      - api
 
   scheduler:
     env_file:
@@ -75,7 +75,7 @@ services:
     networks:
       - recipe-manager
     depends_on:
-      - app
+      - api
 
   db:
     env_file:
@@ -90,7 +90,7 @@ services:
     networks:
       - recipe-manager
     volumes:
-      - ./data/mysql:/var/lib/mysql
+      - ./api/data/mysql:/var/lib/mysql
 
   redis:
     env_file:
@@ -109,6 +109,6 @@ services:
     environment:
       - MEILI_MASTER_KEY=${MEILISEARCH_KEY}
     volumes:
-      - ./data/meilisearch:/data.ms
+      - ./api/data/meilisearch:/data.ms
     networks:
       - recipe-manager
