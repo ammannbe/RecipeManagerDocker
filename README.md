@@ -111,3 +111,4 @@ In the container _db_ you can override following paths:
 In the container _meilisearch_ you can override following paths:
 
 - **./api/data/meilisearch:/data.ms** This folder contains your indexed db models for searching
+
